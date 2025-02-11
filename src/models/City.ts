@@ -2,7 +2,7 @@ export interface City {
   cityName: string;
   country: string;
   emoji: string;
-  date: Date;
+  date: string;
   notes: string;
   position: {
     lat: number;
