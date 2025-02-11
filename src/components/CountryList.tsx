@@ -1,3 +1,4 @@
+import { useCities } from "../contexts/CitiesContext";
 import { City } from "../models/City";
 import { Country } from "../models/Country";
 import CountryItem from "./CountryItem";
@@ -5,12 +6,9 @@ import styles from "./CountryList.module.css";
 import Message from "./Message";
 import Spinner from "./Spinner";
 
-interface CityListProps {
-  cities: City[];
-  isLoading: boolean;
-}
+function CountriesList() {
+  const { cities, isLoading } = useCities();
 
-function CountriesList({ cities, isLoading }: CityListProps) {
   if (isLoading) return <Spinner />;
   if (!cities.length)
     return (
