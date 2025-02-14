@@ -62,7 +62,7 @@ function Form() {
       date,
       notes,
       position: { lat, lng },
-    };useCities
+    };
     await createCity(newCity);
     navigate("/app");
   }

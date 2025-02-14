@@ -10,6 +10,7 @@ type CitiesContextType = {
   currentCity: City | null;
   getCity: (id: string) => Promise<void>;
   createCity: (newCity: City) => Promise<void>;
+  deleteCity: (id: number) => Promise<void>;
 };
 
 function CitiesProvider({ children }: { children: React.ReactNode }) {
@@ -66,8 +67,21 @@ function CitiesProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  async function deleteCity(id: number) {
+    setIsLoading(true);
+    try {
+      await fetch(`${DATA_URL}/cities/${id}`, { method: "DELETE" });
+      setCities((cities) => cities.filter((city) => city.id !== id));
+    } catch {
+      alert("There was a problem deleting the city...");
+    } finally {
+      setIsLoading(false);
+    }
+  }
   return (
-    <CitiesContext.Provider value={{ cities, isLoading, currentCity, getCity, createCity }}>
+    <CitiesContext.Provider
+      value={{ cities, isLoading, currentCity, getCity, createCity, deleteCity }}
+    >
       {children}
     </CitiesContext.Provider>
   );
