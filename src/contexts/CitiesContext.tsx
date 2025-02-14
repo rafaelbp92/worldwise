@@ -1,20 +1,21 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { City as CityModel } from "../models/City";
+import { City } from "../models/City";
 
 const DATA_URL = "http://localhost:8000";
 const CitiesContext = createContext({});
 
 type CitiesContextType = {
-  cities: CityModel[];
+  cities: City[];
   isLoading: boolean;
-  currentCity: CityModel | null;
+  currentCity: City | null;
   getCity: (id: string) => Promise<void>;
+  createCity: (newCity: City) => Promise<void>;
 };
 
 function CitiesProvider({ children }: { children: React.ReactNode }) {
-  const [cities, setCities] = useState<CityModel[]>([]);
+  const [cities, setCities] = useState<City[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [currentCity, setCurrentCity] = useState<CityModel | null>(null);
+  const [currentCity, setCurrentCity] = useState<City | null>(null);
 
   useEffect(function () {
     async function fetchCities() {
@@ -46,8 +47,27 @@ function CitiesProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  async function createCity(newCity: City) {
+    setIsLoading(true);
+    try {
+      const res = await fetch(`${DATA_URL}/cities`, {
+        method: "POST",
+        body: JSON.stringify(newCity),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      setCities((cities) => [...cities, data]);
+    } catch {
+      alert("There was a problem creating the city...");
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
-    <CitiesContext.Provider value={{ cities, isLoading, currentCity, getCity }}>
+    <CitiesContext.Provider value={{ cities, isLoading, currentCity, getCity, createCity }}>
       {children}
     </CitiesContext.Provider>
   );
